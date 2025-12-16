@@ -185,10 +185,7 @@ const Login = () => {
         </form>
 
         {/* Footer */}
-        <p style={styles.footer}>
-          Protected by reCAPTCHA and subject to the{" "}
-          <a href="#" style={styles.footerLink}>Privacy Policy</a>
-        </p>
+   
       </div>
     </div>
   );

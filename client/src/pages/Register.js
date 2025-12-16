@@ -1,6 +1,6 @@
-import { useContext, useState } from "react";
+import {  useState } from "react";
 import axios from "axios";
-import { AuthContext } from "../context/AuthContext";
+// import { AuthContext } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import API_BASE_URL from "../utils/config";
 
@@ -13,7 +13,7 @@ const Register = () => {
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const { login } = useContext(AuthContext);
+  // const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
 // const handleSubmit = async (e) => {
