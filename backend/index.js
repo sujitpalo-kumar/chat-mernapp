@@ -64,6 +64,7 @@ mongoose
   .then(() => console.log("MongoDB connected"))
   .catch(console.error);
 
-server.listen(process.env.PORT,() => {
-  console.log("Backend running on port 5000");
+const PORT = process.env.PORT || 5000;
+server.listen(PORT, () => {
+  console.log(`Backend running on port ${PORT}`);
 });
