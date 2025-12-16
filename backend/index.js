@@ -36,6 +36,7 @@ if (!fs.existsSync(uploadsDir)) {
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Routes
+
 app.use("/api/auth", authRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/users", userRoutes);
