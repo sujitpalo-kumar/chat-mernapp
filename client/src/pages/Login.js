@@ -13,6 +13,7 @@ const Login = () => {
 
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
+  console.log("aaaaaaaaaaaa",API_BASE_URL)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
