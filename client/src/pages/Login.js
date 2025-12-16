@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
-import API_BASE_URL from "../utils/config";
+// import API_BASE_URL from "../utils/config";
 
 
 const Login = () => {
@@ -14,7 +14,7 @@ const Login = () => {
 
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
-  console.log("aaaaaaaaaaaa",API_BASE_URL)
+  // console.log("aaaaaaaaaaaa",API_BASE_URL)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,7 +23,7 @@ const Login = () => {
       setLoading(true);
       setError("");
 
-      const res = await axios.post(`${API_BASE_URL}/api/auth/login`, {
+      const res = await axios.post(`/api/auth/login`, {
         email,
         password,
       });

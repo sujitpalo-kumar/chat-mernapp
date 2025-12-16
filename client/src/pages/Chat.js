@@ -2,7 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import io from "socket.io-client";
 import axios from "axios";
-import API_BASE_URL from "../utils/config";
+// import API_BASE_URL from "../utils/config";
 
 const Chat = () => {
   const { user, logout } = useContext(AuthContext);
@@ -28,7 +28,7 @@ const Chat = () => {
     if (!user) return;
 
     axios
-      .get(`${API_BASE_URL}/api/users`, {
+      .get(`/api/users`, {
         headers: { 
           Authorization: `Bearer ${localStorage.getItem("token")}`
         
@@ -46,7 +46,7 @@ const Chat = () => {
     if (!user || !selectedUser) return;
 
     axios
-      .get(`${API_BASE_URL}/api/chat/${selectedUser._id}`, {
+      .get(`/api/chat/${selectedUser._id}`, {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}`
     },
     })
@@ -64,7 +64,7 @@ const Chat = () => {
 useEffect(() => {
   if (!user) return;
 
-  socketRef.current = io(API_BASE_URL, {
+  socketRef.current = io( {
     auth: { token: localStorage.getItem("token") },
     transports: ["websocket"], // ✅ important
   });
@@ -95,7 +95,7 @@ useEffect(() => {
   if (!user || !selectedUser) return;
 
   axios
-    .get(`${API_BASE_URL}/api/chat/${selectedUser._id}`, {
+    .get(`/api/chat/${selectedUser._id}`, {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}`
     },
     })
@@ -114,7 +114,7 @@ const sendMessage = async () => {
 
   try {
     await axios.post(
-      `${API_BASE_URL}/api/chat/send`,
+      `/api/chat/send`,
       { receiver: selectedUser._id, message },
       { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
     );
@@ -138,7 +138,7 @@ const sendMessage = async () => {
       form.append("file", file);
       form.append("receiver", selectedUser._id);
 
-      const { data } = await axios.post(`${API_BASE_URL}/api/chat/upload-db`, form, {
+      const { data } = await axios.post(`/api/chat/upload-db`, form, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "multipart/form-data"

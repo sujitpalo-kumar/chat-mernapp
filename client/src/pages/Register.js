@@ -2,7 +2,7 @@ import {  useState } from "react";
 import axios from "axios";
 // import { AuthContext } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
-import API_BASE_URL from "../utils/config";
+// import API_BASE_URL from "../utils/config";
 
 const Register = () => {
       const [name, setName] = useState("");
@@ -35,7 +35,7 @@ const Register = () => {
       setLoading(true);
       setError("");
 
-      const res = await axios.post(`${API_BASE_URL}/api/auth/register`, {
+      const res = await axios.post(`/api/auth/register`, {
      name,
       email,
       password,

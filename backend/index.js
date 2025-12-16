@@ -4,6 +4,7 @@ const { Server } = require("socket.io");
 const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv").config();
+const path = require("path");
 
 const authRoutes = require("./routes/authRoutes");
 const chatRoutes = require("./routes/chatRoutes");
@@ -19,11 +20,14 @@ const io = new Server(server, {
   cors: { origin: "*" },
 });
 socketHandler(io);
+const clientBuildPath = path.resolve(__dirname, "../client/build");
 
+// Serve static files
+app.use(express.static(clientBuildPath));
 // Middleware
 // app.use(cors());
 app.use(express.json());
-const path = require("path");
+
 const fs = require("fs");
 
 // Ensure uploads directory exists (prevents multer ENOENT errors)
