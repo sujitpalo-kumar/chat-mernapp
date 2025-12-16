@@ -14,7 +14,8 @@ const Chat = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const socketRef = useRef(null);
   const messagesEndRef = useRef(null);
-
+  // Use full backend address (include port). Update if your backend runs on a different port.
+  const SOCKET_URL = "http://16.16.66.74";
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -64,9 +65,19 @@ const Chat = () => {
 useEffect(() => {
   if (!user) return;
 
-  socketRef.current = io( {
+  socketRef.current = io( SOCKET_URL,{
     auth: { token: localStorage.getItem("token") },
     transports: ["websocket"], // ✅ important
+    //  reconnection: true,
+  });
+
+  // Debug connection events
+  socketRef.current.on('connect', () => {
+    console.log('Socket connected, id:', socketRef.current.id);
+  });
+
+  socketRef.current.on('connect_error', (err) => {
+    console.error('Socket connect error:', err && err.message ? err.message : err);
   });
 
   socketRef.current.on("receiveMessage", (data) => {
@@ -113,20 +124,44 @@ const sendMessage = async () => {
   if (!message.trim() || !selectedUser) return;
 
   try {
-    await axios.post(
+    // Save message on server and get saved message object back (if server returns it)
+    const { data } = await axios.post(
       `/api/chat/send`,
       { receiver: selectedUser._id, message },
       { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
     );
 
-    socketRef.current.emit("sendMessage", {
-      receiver: selectedUser._id,
-      message,
-    });
+    // Prefer server response as the saved message. If server doesn't return the saved
+    // message object, fall back to an optimistic message object so UI updates immediately.
+    const newMessage =
+      data && typeof data === 'object' && !(Array.isArray(data))
+        ? data
+        : {
+            message,
+            sender: user._id || user.id,
+            receiver: selectedUser._id,
+            createdAt: new Date().toISOString(),
+          };
+
+    // Emit the saved/new message so server can broadcast to recipient(s).
+    // Ensure we pass the receiver as an id string (server expects a room id),
+    // because `newMessage.receiver` may be a populated object when server returned it.
+    const receiverId = newMessage?.receiver?._id || newMessage?.receiver || selectedUser?._id;
+    const emitPayload = {
+      ...newMessage,
+      receiver: String(receiverId),
+    };
+
+    if (socketRef.current && socketRef.current.emit) {
+      socketRef.current.emit('sendMessage', emitPayload);
+    }
+
+    // Optimistically append to local messages so sender sees it immediately.
+    setMessages((prev) => (Array.isArray(prev) ? [...prev, newMessage] : [newMessage]));
 
     setMessage("");
   } catch (err) {
-    console.error("Send message error:", err);
+    console.error('Send message error:', err);
   }
 };
 
