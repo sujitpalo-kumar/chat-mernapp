@@ -15,7 +15,7 @@ const Chat = () => {
   const socketRef = useRef(null);
   const messagesEndRef = useRef(null);
   // Use full backend address (include port). Update if your backend runs on a different port.
-  const SOCKET_URL = "http://16.16.66.74";
+  const SOCKET_URL = "http://16.16.66.74"; // Example: "http://localhost:5000"
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
