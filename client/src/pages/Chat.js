@@ -2,7 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import io from "socket.io-client";
 import axios from "axios";
-// import API_BASE_URL from "../utils/config";
+import API_BASE_URL from "../utils/config";
 
 const Chat = () => {
   const { user, logout } = useContext(AuthContext);
@@ -15,7 +15,7 @@ const Chat = () => {
   const socketRef = useRef(null);
   const messagesEndRef = useRef(null);
   // Use full backend address (include port). Update if your backend runs on a different port.
-  const SOCKET_URL = "http://16.16.66.74"; // Example: "http://localhost:5000"
+  // const SOCKET_URL = "http://localhost:5000"; // Example: "http://localhost:5000"
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -29,7 +29,7 @@ const Chat = () => {
     if (!user) return;
 
     axios
-      .get(`/api/users`, {
+      .get(`${API_BASE_URL}/api/users`, {
         headers: { 
           Authorization: `Bearer ${localStorage.getItem("token")}`
         
@@ -47,7 +47,7 @@ const Chat = () => {
     if (!user || !selectedUser) return;
 
     axios
-      .get(`/api/chat/${selectedUser._id}`, {
+      .get(`${API_BASE_URL}/api/chat/${selectedUser._id}`, {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}`
     },
     })
@@ -65,7 +65,7 @@ const Chat = () => {
 useEffect(() => {
   if (!user) return;
 
-  socketRef.current = io( SOCKET_URL,{
+  socketRef.current = io( API_BASE_URL,{
     auth: { token: localStorage.getItem("token") },
     transports: ["websocket"], // ✅ important
     //  reconnection: true,
@@ -106,7 +106,7 @@ useEffect(() => {
   if (!user || !selectedUser) return;
 
   axios
-    .get(`/api/chat/${selectedUser._id}`, {
+    .get(`${API_BASE_URL}/api/chat/${selectedUser._id}`, {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}`
     },
     })
@@ -126,7 +126,7 @@ const sendMessage = async () => {
   try {
     // Save message on server and get saved message object back (if server returns it)
     const { data } = await axios.post(
-      `/api/chat/send`,
+      `${API_BASE_URL}/api/chat/send`,
       { receiver: selectedUser._id, message },
       { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
     );
@@ -173,7 +173,7 @@ const sendMessage = async () => {
       form.append("file", file);
       form.append("receiver", selectedUser._id);
 
-      const { data } = await axios.post(`/api/chat/upload-db`, form, {
+      const { data } = await axios.post(`${API_BASE_URL}/api/chat/upload-db`, form, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "multipart/form-data"
