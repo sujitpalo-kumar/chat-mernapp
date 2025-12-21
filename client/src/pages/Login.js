@@ -2,7 +2,8 @@ import { useContext, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
-import API_BASE_URL from "../utils/config";
+import {API_BASE_URL}from "../utils/config";
+
 
 
 const Login = () => {
@@ -23,7 +24,7 @@ const Login = () => {
       setLoading(true);
       setError("");
 
-      const res = await axios.post(`${API_BASE_URL}/api/auth/login`, {
+      const res = await axios.post(`${API_BASE_URL}/auth/login`, {
         email,
         password,
       });
